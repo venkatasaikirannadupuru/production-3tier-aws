@@ -8,6 +8,8 @@ pipeline {
 
         ECR_REPOSITORY = 'production-3tier-app'
         IMAGE_TAG      = 'latest'
+
+        DB_PASSWORD = credentials('rds-db-password')
     }
 
     stages {
@@ -58,7 +60,12 @@ pipeline {
         stage('Create ECR Repository') {
             steps {
                 dir('terraform') {
-                    sh 'terraform apply -target=aws_ecr_repository.app -auto-approve'
+                    sh '''
+                        terraform apply \
+                          -target=aws_ecr_repository.app \
+                          -var="db_password=${DB_PASSWORD}" \
+                          -auto-approve
+                    '''
                 }
             }
         }
@@ -78,9 +85,9 @@ pipeline {
                 sh '''
                     aws ecr get-login-password --region ${AWS_REGION} | \
                     docker login \
-                    --username AWS \
-                    --password-stdin \
-                    ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com
+                      --username AWS \
+                      --password-stdin \
+                      ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com
                 '''
             }
         }
@@ -89,8 +96,8 @@ pipeline {
             steps {
                 sh '''
                     docker tag \
-                    ${ECR_REPOSITORY}:${IMAGE_TAG} \
-                    ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPOSITORY}:${IMAGE_TAG}
+                      ${ECR_REPOSITORY}:${IMAGE_TAG} \
+                      ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPOSITORY}:${IMAGE_TAG}
                 '''
             }
         }
@@ -99,7 +106,7 @@ pipeline {
             steps {
                 sh '''
                     docker push \
-                    ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPOSITORY}:${IMAGE_TAG}
+                      ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPOSITORY}:${IMAGE_TAG}
                 '''
             }
         }
@@ -107,7 +114,10 @@ pipeline {
         stage('Terraform Plan') {
             steps {
                 dir('terraform') {
-                    sh 'terraform plan'
+                    sh '''
+                        terraform plan \
+                          -var="db_password=${DB_PASSWORD}"
+                    '''
                 }
             }
         }
@@ -122,7 +132,11 @@ pipeline {
         stage('Terraform Apply') {
             steps {
                 dir('terraform') {
-                    sh 'terraform apply -auto-approve'
+                    sh '''
+                        terraform apply \
+                          -var="db_password=${DB_PASSWORD}" \
+                          -auto-approve
+                    '''
                 }
             }
         }
