@@ -5,10 +5,6 @@ pipeline {
     environment {
         AWS_DEFAULT_REGION = 'ap-south-1'
         AWS_REGION         = 'ap-south-1'
-        AWS_ACCOUNT_ID     = sh(
-            script: 'aws sts get-caller-identity --query Account --output text',
-            returnStdout: true
-        ).trim()
 
         ECR_REPOSITORY = 'production-3tier-app'
         IMAGE_TAG      = 'latest'
@@ -19,6 +15,19 @@ pipeline {
         stage('Checkout') {
             steps {
                 checkout scm
+            }
+        }
+
+        stage('Get AWS Account ID') {
+            steps {
+                script {
+                    env.AWS_ACCOUNT_ID = sh(
+                        script: 'aws sts get-caller-identity --query Account --output text',
+                        returnStdout: true
+                    ).trim()
+
+                    echo "AWS Account ID: ${env.AWS_ACCOUNT_ID}"
+                }
             }
         }
 
