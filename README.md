@@ -2,19 +2,8 @@
 
 
 
-!\[AWS](https://img.shields.io/badge/AWS-Cloud-orange?logo=amazon-aws)
+<img width="1536" height="1024" alt="c32b8800-b1dd-45fe-adc9-5dac8465b9de" src="https://github.com/user-attachments/assets/5ca47834-7a94-4435-b3af-8ecddea795e6" />
 
-!\[Terraform](https://img.shields.io/badge/Terraform-Infrastructure%20as%20Code-7B42BC?logo=terraform)
-
-!\[Jenkins](https://img.shields.io/badge/Jenkins-CI%2FCD-D24939?logo=jenkins)
-
-!\[Docker](https://img.shields.io/badge/Docker-Containerization-2496ED?logo=docker)
-
-!\[Python](https://img.shields.io/badge/Python-Flask-3776AB?logo=python)
-
-!\[Amazon ECR](https://img.shields.io/badge/Amazon-ECR-FF9900?logo=amazon-aws)
-
-!\[Amazon RDS](https://img.shields.io/badge/Amazon-RDS-527FFF?logo=amazon-aws)
 
 
 
